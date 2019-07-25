@@ -42,8 +42,6 @@ val setting: StringSetSetting by stringSetSetting { }
 ```
 These functions can only be called within the body of a `StringProvider` class or object.
 
-For other types, you can write adapters to adapt your type to one of the provided types.
-
 ### Using
 To access and update your settings, simply access the values of your `Setting` properties through the instance of your `SettingsProvider`. The library will automatically access or update the saved value in the backing storage source.
 

@@ -56,9 +56,9 @@ inline fun SettingsProvider.stringSetSetting(builder: SettingsBuilder<Set<String
 }*/
 
 
-class SettingsDelegate<T, S : Setting<out T>>(
+class SettingsDelegate<T, S : Setting<T>>(
     private val settingClass: KClass<S>,
-    private val builder: SettingsBuilder<T>
+    internal val builder: SettingsBuilder<T>
 ) {
     private var cache: S? = null
 

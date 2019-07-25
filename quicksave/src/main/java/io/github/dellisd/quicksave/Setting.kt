@@ -27,10 +27,10 @@ sealed class Setting<T> constructor(
 ) {
     private val listeners = mutableSetOf<(T) -> Unit>()
 
-    var value: T
+    open var value: T
         get() = provider.get(this)
         set(value) {
-            listeners.forEach { it(value) }
+            notifyListeners(value)
             provider.set(this, value)
         }
 
@@ -50,6 +50,10 @@ sealed class Setting<T> constructor(
      */
     fun removeListener(listener: (T) -> Unit) {
         listeners.remove(listener)
+    }
+
+    protected fun notifyListeners(value: T) {
+        listeners.forEach { it(value) }
     }
 
     /**
