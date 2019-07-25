@@ -21,15 +21,28 @@ dependencies {
 
 ### Implementing
 To implement your settings, extend the `SettingsProvider` interface and delegate the storage/access functions to one of the provided implementations of `SettingsProvider` (see below for the provided classes, or for how to implement your own).
-Create properties for each of the settings you would like to save using the delegated `setting { }` DSL.
+Create properties for each of the settings you would like to save using the one of the delegated property classes obtained by a `[type]setting { }` function.
 
 ```kotlin
 class MySettings(provider: SettingsProvider) : SettingsProvider by provider {
-    val maxDownloadSize: Setting<Int> by setting { }  
+    val maxDownloadSize by intSetting { }  
 }
 
 val settings = MySettings(SharedPreferenceProvider(sharedPreferences))
 ```
+
+The following types of settings are available:
+```kotlin
+val setting: StringSetting by stringSetting { }      
+val setting: IntSetting by intSetting { }            
+val setting: LongSetting by longSetting { }          
+val setting: FloatSetting by floatSetting { }        
+val setting: BooleanSetting by booleanSetting { }    
+val setting: StringSetSetting by stringSetSetting { }
+```
+These functions can only be called within the body of a `StringProvider` class or object.
+
+For other types, you can write adapters to adapt your type to one of the provided types.
 
 ### Using
 To access and update your settings, simply access the values of your `Setting` properties through the instance of your `SettingsProvider`. The library will automatically access or update the saved value in the backing storage source.
@@ -52,23 +65,9 @@ settings.maxDownloadSize.addListener { newValue ->
 }
 ```
 
-## `SettingsProvider`s
-Quicksave comes with two SettingsProviders implementations that handle the storage of settings values: `SharedPreferenceProvider` which uses Android's `SharedPreferences`, and `MapProvider` which uses in-memory `Map`s to store key-value pairs.
-Because these implementations handle the storage and access functions of the settings provider, you can delegate those responsibilities to one of these implementations from your custom settings implementation. All `Setting` properties declared in your settings implementation will automatically use the delegated functionality.
-
-There may be cases where you want to use another storage method to persist your settings values and it is easy to create your own implementation of `SettingsProvider` to do this.
-Simply extend the `SettingsProvider` interface and override the `get` and `set` methods.
-
-#### get
-The get method has a signature of `fun <T : Any> get(setting: Setting<T>): T`. It accepts the `Setting` property to get the value of, and returns the value of that setting.
-Since `T` is erased at runtime, each `Setting<T>` object includes a `type: KClass<T>` property in order to determine the type of value being stored. This can be compared against in order to determine how to convert the stored value into a runtime value.
-
-#### set
-The set method has a signature of `fun <T : Any> set(setting: Setting<T>, value: T)`. It accepts the `Setting` property to set the value of, as well as the new value to set the setting to.
-As with `get`, the `type` property of the setting can be used to determine how to store the setting's value.
-
 ## `Setting<T>`
-The `Setting` class is used to represent each of the app's settings. Instances of this class can be obtained by using the `setting { }` delegated property which acts as a DSL to configure the setting. **Note:** The `setting { }` function can only be called within the body of a `SettingsProvider` class.
+The `Setting` class is the base class used to represent each of the app's settings. Each of the provided types has a class that corresponds directly to a specialization of the `Setting` class.
+For instance: `BooleanSetting` corresponds to `Setting<Boolean>`. 
 
 The following properties can be configured for a setting:
 
@@ -81,10 +80,10 @@ The following properties can be configured for a setting:
 These properties can be configured like this:
 ```kotlin
 // All default values
-val toggle: Setting<Boolean> by setting { }
+val toggle by booleanSetting { }
 
 // All overridden values
-val volume: Setting<Int> by setting {
+val volume by intSetting {
     key = "volume"
     default = 100
     title = "Audio Volume"
@@ -103,3 +102,18 @@ val settingsLayout = findViewById<SettingsLayout>(R.id.settings_layout)
 // settings from above
 settingsLayout.inflateSettings(toggle, volume)
 ```
+
+## `SettingsProvider`s
+Quicksave comes with two SettingsProviders implementations that handle the storage of settings values: `SharedPreferenceProvider` which uses Android's `SharedPreferences`, and `MapProvider` which uses in-memory `Map`s to store key-value pairs.
+Because these implementations handle the storage and access functions of the settings provider, you can delegate those responsibilities to one of these implementations from your custom settings implementation. All `Setting` properties declared in your settings implementation will automatically use the delegated functionality.
+
+There may be cases where you want to use another storage method to persist your settings values and it is easy to create your own implementation of `SettingsProvider` to do this.
+Simply extend the `SettingsProvider` interface and override the `get` and `set` methods.
+
+#### get
+The get method has a signature of `fun <T : Any> get(setting: Setting<T>): T`. It accepts the `Setting` property to get the value of, and returns the value of that setting.
+Since `T` is erased at runtime, each `Setting<T>` object includes a `type: KClass<T>` property in order to determine the type of value being stored. This can be compared against in order to determine how to convert the stored value into a runtime value.
+
+#### set
+The set method has a signature of `fun <T : Any> set(setting: Setting<T>, value: T)`. It accepts the `Setting` property to set the value of, as well as the new value to set the setting to.
+As with `get`, the `type` property of the setting can be used to determine how to store the setting's value.

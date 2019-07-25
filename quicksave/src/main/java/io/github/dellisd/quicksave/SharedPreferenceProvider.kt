@@ -2,27 +2,32 @@ package io.github.dellisd.quicksave
 
 import android.content.SharedPreferences
 
+@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 class SharedPreferenceProvider(private val sharedPreferences: SharedPreferences) : SettingsProvider {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> get(setting: Setting<T>): T {
-        return when (setting.type) {
-            String::class -> sharedPreferences.getString(setting.key, setting.default as? String)
-            Int::class -> sharedPreferences.getInt(setting.key, setting.default as? Int ?: 0)
-            Long::class -> sharedPreferences.getLong(setting.key, setting.default as? Long ?: 0)
-            Boolean::class -> sharedPreferences.getBoolean(setting.key, setting.default as? Boolean ?: false)
-            Float::class -> sharedPreferences.getFloat(setting.key, setting.default as? Float ?: 0f)
-            else -> throw IllegalArgumentException("No way to get ${setting.type.java} from SharedPreferences")
+    override fun <T> get(setting: Setting<T>): T {
+        val (key, default) = setting.config
+
+        return when (setting) {
+            is StringSetting -> sharedPreferences.getString(key, default as? String)
+            is IntSetting -> sharedPreferences.getInt(key, default as? Int ?: 0)
+            is LongSetting -> sharedPreferences.getLong(key, default as? Long ?: 0)
+            is BooleanSetting -> sharedPreferences.getBoolean(key, default as? Boolean ?: false)
+            is FloatSetting -> sharedPreferences.getFloat(key, default as? Float ?: 0f)
+            is StringSetSetting -> sharedPreferences.getStringSet(key, default as? Set<String>)
         } as T
     }
 
-    override fun <T : Any> set(setting: Setting<T>, value: T) {
-        when (setting.type) {
-            String::class -> sharedPreferences.edit().putString(setting.key, value as String?).apply()
-            Int::class -> sharedPreferences.edit().putInt(setting.key, value as Int).apply()
-            Long::class -> sharedPreferences.edit().putLong(setting.key, value as Long).apply()
-            Boolean::class -> sharedPreferences.edit().putBoolean(setting.key, value as Boolean).apply()
-            Float::class -> sharedPreferences.edit().putFloat(setting.key, value as Float).apply()
-            else -> throw IllegalArgumentException("No way to put ${setting.type.java} into SharedPreferences")
+    override fun <T> set(setting: Setting<T>, value: T) {
+        val (key) = setting.config
+
+        when (setting) {
+            is StringSetting -> sharedPreferences.edit().putString(key, value as String?).apply()
+            is IntSetting -> sharedPreferences.edit().putInt(key, value as Int).apply()
+            is LongSetting -> sharedPreferences.edit().putLong(key, value as Long).apply()
+            is BooleanSetting -> sharedPreferences.edit().putBoolean(key, value as Boolean).apply()
+            is FloatSetting -> sharedPreferences.edit().putFloat(key, value as Float).apply()
+            is StringSetSetting -> sharedPreferences.edit().putStringSet(key, value as? Set<String>).apply()
         }
     }
 }
+

@@ -37,11 +37,11 @@ class SwitchSetting @JvmOverloads constructor(
             setting.value = newState
         }
 
-        view.findViewById<TextView>(R.id.setting_title).text = setting.title
-        view.findViewById<TextView>(R.id.setting_caption).text = setting.caption
+        view.findViewById<TextView>(R.id.setting_title).text = setting.config.title
+        view.findViewById<TextView>(R.id.setting_caption).text = setting.config.caption
 
-        if (setting.dependsOn != null) {
-            setting.dependsOn.addListener {
+        if (setting.config.dependsOn != null) {
+            setting.config.dependsOn.addListener {
                 this.isEnabled = it
                 switch.isEnabled = it
             }
