@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="titleTextAppearance" format="reference" />
+    <attr name="captionTextAppearance" format="reference" />
+
+    <attr name="offset_start" format="dimension" />
+    <attr name="offset_end" format="dimension" />
+
+    <declare-styleable name="SwitchSetting">
+        <attr name="titleTextAppearance" />
+        <attr name="captionTextAppearance" />
+
+        <attr name="offset_start" />
+        <attr name="offset_end" />
+    </declare-styleable>
+
+    <declare-styleable name="CheckBoxSetting">
+        <attr name="titleTextAppearance" />
+        <attr name="captionTextAppearance" />
+
+        <attr name="offset_start" />
+        <attr name="offset_end" />
+    </declare-styleable>
+</resources>

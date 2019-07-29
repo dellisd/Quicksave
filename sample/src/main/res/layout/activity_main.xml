@@ -14,14 +14,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    <io.github.dellisd.quicksave.views.SettingsLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/settings" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="parent" android:id="@+id/textView"/>
+    <io.github.dellisd.quicksave.views.SwitchSetting
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:background="?selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" android:id="@+id/switch_setting"/>
+    <io.github.dellisd.quicksave.views.CheckBoxSetting
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:id="@+id/checkbox_setting"
+            android:background="?selectableItemBackground" app:layout_constraintTop_toBottomOf="@+id/switch_setting"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

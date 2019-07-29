@@ -5,7 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.github.dellisd.quicksave.R
 import io.github.dellisd.quicksave.SharedPreferenceProvider
-import io.github.dellisd.quicksave.views.SettingsLayout
+import io.github.dellisd.quicksave.views.CheckBoxSetting
+import io.github.dellisd.quicksave.views.SwitchSetting
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,11 +14,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val settingsLayout = findViewById<SettingsLayout>(R.id.settings)
+        //val settingsLayout = findViewById<SettingsLayout>(R.id.settings)
         val provider =
             SharedPreferenceProvider(getSharedPreferences("test", Context.MODE_PRIVATE))
         val settings = MySettings(provider)
 
-        settingsLayout.inflateSettings(settings.test, settings.other)
+        findViewById<SwitchSetting>(R.id.switch_setting).bindSetting(settings.test)
+        findViewById<CheckBoxSetting>(R.id.checkbox_setting).bindSetting(settings.test)
+
+        //settingsLayout.inflateSettings(settings.test, settings.other)
     }
 }
